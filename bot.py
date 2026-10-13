@@ -28,6 +28,14 @@ from handlers_user import router as user_router
 
 
 async def main() -> None:
+    # Логирование настраивается ДО любых записей в лог.
+    # Иначе logging.warning() сам неявно вызовет basicConfig() с уровнем WARNING,
+    # и следующий basicConfig(level=INFO) уже ничего не изменит.
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+    )
+
     if not config.BOT_TOKEN:
         raise SystemExit(
             "BOT_TOKEN не задан.\n"
@@ -38,11 +46,6 @@ async def main() -> None:
             "ADMIN_IDS пуст — заявки никому не придут. "
             "Свой ID можно узнать у бота @userinfobot."
         )
-
-    logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s %(levelname)s %(name)s: %(message)s",
-    )
 
     await db.init_db()
 

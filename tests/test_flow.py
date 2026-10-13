@@ -334,6 +334,18 @@ async def main() -> None:
     orders = await db.recent_orders(limit=10)
     check(orders[0]["comment"] == "", "прочерк сохраняется пустой строкой")
 
+    # 16. Пока бот не настроен, он подсказывает владельцу его ID
+    config.ADMIN_IDS = []
+    s.reset()
+    await run.send(USER_ID + 1, "/start")
+    check("Ваш ID" in " ".join(s.texts()),
+          "при пустом ADMIN_IDS бот показывает ID для настройки")
+    config.ADMIN_IDS = [ADMIN_ID]
+    s.reset()
+    await run.send(USER_ID + 2, "/start")
+    check("Ваш ID" not in " ".join(s.texts()),
+          "после настройки подсказка больше не показывается")
+
     await run.bot.session.close()
     tmp_db.unlink(missing_ok=True)
 

@@ -64,6 +64,18 @@ async def cmd_start(message: Message, state: FSMContext) -> None:
         reply_markup=kb.main_menu(),
     )
 
+    # Пока ADMIN_IDS не заполнен, бот не может отправлять заявки владельцу.
+    # Поэтому показываем тому, кто его запустил, его собственный ID —
+    # это избавляет от необходимости искать @userinfobot.
+    if not config.ADMIN_IDS and user is not None:
+        await message.answer(
+            "⚠️ <b>Бот ещё не настроен.</b>\n\n"
+            f"Ваш ID: <code>{user.id}</code>\n\n"
+            "Скопируйте это число в файл <code>.env</code> в строку "
+            "<code>ADMIN_IDS</code> и перезапустите бота. "
+            "Без этого заявки не будут приходить вам в личку."
+        )
+
 
 @router.message(Command("cancel"))
 async def cmd_cancel(message: Message, state: FSMContext) -> None:
