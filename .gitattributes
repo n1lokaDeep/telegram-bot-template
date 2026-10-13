@@ -1,0 +1,8 @@
+# Не даём git испортить скрипты переносами строк.
+# Без этого Windows-версия git может записать .sh с CRLF,
+# и на сервере скрипт упадёт с загадочной ошибкой.
+* text=auto
+*.sh text eol=lf
+*.service text eol=lf
+*.py text eol=lf
+*.md text eol=lf
