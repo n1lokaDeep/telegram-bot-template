@@ -16,6 +16,7 @@ if sys.platform == "win32":
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import BotCommand
@@ -45,8 +46,13 @@ async def main() -> None:
 
     await db.init_db()
 
+    session = AiohttpSession(proxy=config.PROXY_URL) if config.PROXY_URL else None
+    if config.PROXY_URL:
+        logging.info("Работаю через прокси: %s", config.PROXY_URL)
+
     bot = Bot(
         token=config.BOT_TOKEN,
+        session=session,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
     dispatcher = Dispatcher(storage=MemoryStorage())
